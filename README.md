@@ -7,6 +7,15 @@ NestJS + PostgreSQL ingestion service for smart meter and EV telemetry. It separ
 1. `docker compose up --build`
 2. Service listens on `http://localhost:3000`
 
+## Deployment (Render + Supabase)
+
+Render egress is often IPv4-only, while the direct Supabase DB host can be IPv6-only. Use the Supabase connection pooler (PgBouncer) URL in production so the DB resolves over IPv4.
+
+Render env vars:
+- `DATABASE_POOL_URL` set to the Supabase pooler connection string (host like `aws-0-<region>.pooler.supabase.com`, port `6543`, include `sslmode=require` and `pgbouncer=true` if provided).
+- `USE_DATABASE_POOLER=true` to force pooler usage (optional if `DATABASE_POOL_URL` is set).
+- `DATABASE_URL` can remain the direct DB URL for local/dev; the app will prefer `DATABASE_POOL_URL` when present.
+
 ## Endpoints
 
 `POST /v1/ingest`
