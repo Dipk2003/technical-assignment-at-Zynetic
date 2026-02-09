@@ -1,9 +1,14 @@
 import 'reflect-metadata';
+import { setDefaultResultOrder } from 'node:dns';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  if (typeof setDefaultResultOrder === 'function') {
+    // Force IPv4 first to avoid IPv6-only network errors on some hosts.
+    setDefaultResultOrder('ipv4first');
+  }
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('v1');
   app.useGlobalPipes(
